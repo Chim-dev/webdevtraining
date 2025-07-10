@@ -119,3 +119,162 @@ music.addEventListener('timeupdate' , updateProgressBar);
 playerProgress.addEventListener('click', setProgressBar);
 
 loadMusic(songs[musicIndex]);
+
+const volumeIcon = document.getElementById('volume-icon');
+const volumeSlider = document.getElementById('volume-slider');
+let volumeTimer;
+
+// Tampilkan / sembunyikan slider volume saat klik ikon
+volumeIcon.addEventListener('click', (e) => {
+  e.stopPropagation(); // supaya klik di icon tidak trigger document click
+  const isVisible = volumeSlider.classList.contains('active');
+
+  if (!isVisible) {
+    volumeSlider.classList.add('active');
+    
+    // Auto-hide setelah 3 detik
+    clearTimeout(volumeTimer);
+    volumeTimer = setTimeout(() => {
+      volumeSlider.classList.remove('active');
+    }, 3000);
+  } else {
+    volumeSlider.classList.remove('active');
+    clearTimeout(volumeTimer);
+  }
+});
+
+// Menyembunyikan slider saat klik di luar area slider dan icon
+document.addEventListener('click', (e) => {
+  if (!volumeSlider.contains(e.target) && e.target !== volumeIcon) {
+    volumeSlider.classList.remove('active');
+    clearTimeout(volumeTimer);
+  }
+});
+
+// Mengatur volume saat slider digeser
+volumeSlider.addEventListener('input', (e) => {
+  music.volume = e.target.value;
+});
+
+const menuBtn = document.getElementById('menu-btn');
+const playlistSidebar = document.getElementById('playlist-sidebar');
+
+// Toggle sidebar saat klik tombol list
+menuBtn.addEventListener('click', () => {
+  playlistSidebar.classList.toggle('show');
+});
+
+// Load lagu saat item diklik
+document.querySelectorAll('#playlist-sidebar ul li').forEach((item, index) => {
+  item.addEventListener('click', () => {
+    loadMusic(index); // pastikan kamu punya fungsi ini
+    playlistSidebar.classList.remove('show'); // tutup sidebar
+  });
+});
+
+volumeSlider.addEventListener('input', (e) => {
+  const volume = parseFloat(e.target.value);
+
+  if (volume === 0) {
+    volumeIcon.className = 'fa-solid fa-volume-xmark'; // 🔇
+  } else if (volume > 0 && volume <= 0.5) {
+    volumeIcon.className = 'fa-solid fa-volume-low'; // 🔉
+  } else {
+    volumeIcon.className = 'fa-solid fa-volume-high'; // 🔊
+  }
+
+  // Atur volume audio
+  if (music) {
+    music.volume = volume;
+  }
+});
+
+const musicList = document.getElementById('music-list');
+const container = document.querySelector('.container');
+const musicItems = document.getElementById('music-items');
+
+
+
+function renderSongList() {
+  musicItems.innerHTML = "";
+  songs.forEach((song, index) => {
+    const li = document.createElement("li");
+    li.textContent = `${song.displayName} - ${song.artist}`;
+    li.addEventListener('click', () => {
+      musicIndex = index;               // Set lagu yang dipilih
+      loadMusic(songs[musicIndex]);     // Load lagu berdasarkan index
+      playMusic();                      // Mainkan lagu
+      musicList.classList.remove('active');
+      container.classList.remove('shifted');
+    });
+    musicItems.appendChild(li);
+  });
+}
+
+
+
+function loadSong(index) {
+  const song = songs[index];
+  music.src = song.file;
+  cover.src = song.cover;
+  document.getElementById('music-title').textContent = `${song.title}`;
+  document.getElementById('music-artist').textContent = `${song.artist}`;
+  music.play();
+}
+
+// Toggle panel
+menuBtn.addEventListener('click', () => {
+  musicList.classList.toggle('active');
+  container.classList.toggle('shifted');
+});
+
+// Panggil awal
+renderSongList();
+
+const addBtn = document.getElementById('add-song-btn');
+const addForm = document.getElementById('add-song-form');
+
+addBtn.addEventListener('click', () => {
+  if (addForm.classList.contains('hidden')) {
+    addForm.classList.remove('hidden');
+    addBtn.textContent = 'Tutup Form';
+  } else {
+    addForm.classList.add('hidden');
+    addBtn.textContent = '+ Tambah Lagu';
+  }
+});
+
+addForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const title = document.getElementById('song-title').value;
+  const artist = document.getElementById('song-artist').value;
+  const audioFile = document.getElementById('song-audio').files[0];
+  const coverFile = document.getElementById('song-cover').files[0];
+
+  if (title && artist && audioFile && coverFile) {
+    const readerAudio = new FileReader();
+    const readerCover = new FileReader();
+
+    readerAudio.onload = (eAudio) => {
+      readerCover.onload = (eCover) => {
+        songs.push({
+          displayName: title,
+          artist: artist,
+          path: eAudio.target.result,
+          cover: eCover.target.result
+        });
+
+        renderSongList();
+        addForm.reset();
+        addForm.classList.add('hidden');
+        addBtn.textContent = '+ Tambah Lagu';
+      };
+      readerCover.readAsDataURL(coverFile);
+    };
+
+    readerAudio.readAsDataURL(audioFile);
+  } else {
+    alert("Mohon lengkapi semua field.");
+  }
+});

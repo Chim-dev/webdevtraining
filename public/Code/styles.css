@@ -36,13 +36,17 @@ body {
 }
 
 .container {
-  background-color: #e7e7e7;
+  background-color: rgba(255, 255, 255, 0.1); /* transparan putih */
+  backdrop-filter: blur(20px);               /* efek blur */
+  -webkit-backdrop-filter: blur(20px);       /* Safari support */
   height: 500px;
   width: 400px;
   border-radius: 20px;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
   transition: all 0.5s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2); /* garis lembut */
 }
+
 
 .container:hover {
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
@@ -55,7 +59,7 @@ body {
   top: -50px;
   left: 50px;
   overflow: hidden;
-  border-radius: 15px;
+  border-radius: 20px;
 }
 
 .player-img img {
@@ -80,7 +84,7 @@ body {
 }
 
 h2 {
-  font-size: 25px;
+  font-size: 20px;
   text-align: center;
   font-weight: 500;
   margin: 10px 0 0;
@@ -93,6 +97,17 @@ h3 {
   margin: 10px 0 0;
 }
 
+h2#music-title,
+h3#music-artist {
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 90%;
+  margin: 0 auto;
+}
+
+
 .player-progress {
   background-color: #fff;
   border-radius: 5px;
@@ -104,7 +119,7 @@ h3 {
 }
 
 .progress {
-  background-color: #212121;
+  background-color: #554d5e;
   border-radius: 5px;
   height: 100%;
   width: 0%;
@@ -116,20 +131,85 @@ h3 {
   top: -25px;
   display: flex;
   justify-content: space-between;
-
+  margin-bottom: 10px;
 }
 
-.player-controls{
+.player-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.left-controls,
+.right-controls {
+  flex: 1;
+  display: flex;
+  /* justify-content: flex-start; */
+}
+
+.right-controls {
   position: relative;
-  top: -15px;
-  left: 120px;
-  width: 200px;
-
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  /* Hapus padding dan margin agar posisi relatif tidak kacau */
+  padding-right: 20px;
+  margin-left: 2px;
+  margin-right: 5px;
 }
+
+.volume-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px; /* geser sedikit ke kiri jika perlu */
+}
+
+#volume-slider {
+  position: absolute;
+  top: -90px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-90deg);
+  width: 80px;
+  height: 6px;
+  display: none;
+  z-index: 999;
+  accent-color: #e7dcdc;
+}
+
+#volume-slider.active {
+  display: block;
+  opacity: 1;
+}
+
+#volume-icon {
+  font-size: 23px;
+  margin-right: 10px;
+}
+
+.main-controls {
+  flex: 1;
+  display: flex;
+  /* justify-content: center; */
+  gap: 30px;
+}
+
+.player-controls i {
+  font-size: 28px;
+  color: #ece2e2;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  justify-content: center;
+}
+
 
 .fa-solid {
   font-size: 30px;
-  color: #666;
+  color: #e0bfbf;
   margin-right: 30px;
   cursor: pointer;
   user-select: none;
@@ -145,4 +225,142 @@ h3 {
   position: relative;
   top: 3px;
 
+}
+
+#menu-btn {
+  font-size: 24px;
+  margin-right: 2px;
+}
+
+/* Sidebar untuk daftar lagu */
+.music-list {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 500px;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4); /* transparan hitam */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(200px);
+  box-shadow: 4px 0 12px rgba(0,0,0,0.4);
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+  z-index: 100;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Saat menu aktif (ditampilkan) */
+.music-list.active {
+  transform: translateX(0);
+}
+
+/* Daftar lagu */
+#music-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#music-items li {
+  padding: 10px 15px;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  transition: background 0.2s ease;
+}
+
+#music-items li:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Kontainer utama digeser saat sidebar muncul */
+.container.shifted {
+  transform: translateX(25px);
+  transition: transform 0.4s ease;
+}
+
+#add-song-btn {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  font-weight: bold;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#add-song-form {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  color: #222;
+}
+
+/* Label di atas input */
+#add-song-form label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #e3dee6;
+  margin-bottom: 4px;
+}
+
+/* Semua input */
+#add-song-form input[type="text"],
+#add-song-form input[type="file"] {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #442740;
+  font-size: 14px;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+#add-song-form input[type="file"]::file-selector-button {
+  padding: 6px 12px;
+  background-color: #c0bcbc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+#add-song-form input[type="file"]::file-selector-button:hover {
+  background-color: #8c8f8e;
+}
+
+/* Tombol submit */
+#add-song-form button {
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #6e6e6e;
+  border: none;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+}
+
+#add-song-form button:hover {
+  background-color: #5f5f5f;
 }

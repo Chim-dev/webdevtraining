@@ -12,28 +12,67 @@
     <img src="Assets/813836.jpg" id="bg-img">
   </div>
 
-  <div class="container">
+  <!-- Sidebar Playlist -->
+  <div class="music-list" id="music-list">
+    <ul id="music-items"></ul>
+    <!-- Tombol tambah lagu -->
+    <button id="add-song-btn" title="Tambah Lagu">+ Tambah Lagu</button>
+      <form id="add-song-form" class="hidden">
+        <label for="song-title">Judul Lagu</label>
+        <input id="song-title" type="text" placeholder="Contoh: Myosotis" required>
+      
+        <label for="song-artist">Artis</label>
+        <input id="song-artist" type="text" placeholder="Contoh: M2U" required>
+      
+        <label for="song-audio">File Lagu (MP3)</label>
+        <input id="song-audio" type="file" accept="audio/*" required>
+      
+        <label for="song-cover">Cover Gambar</label>
+        <input id="song-cover" type="file" accept="image/*" required>
+      
+        <button type="submit">Tambah</button>
+      </form>
+
+
+  </div>
+
+  <!-- Main Container -->
+  <div class="container" id="container">
     <div class="player-img">
-        <img src="Assets/813836.jpg" class="active" id="cover">
+      <img src="Assets/813836.jpg" class="active" id="cover">
     </div>
 
-    <h2 id="music-title"> Test</h2>
-    <h3 id="music-artist"> Test</h3>
+    <h2 id="music-title">Test</h2>
+    <h3 id="music-artist">Test</h3>
 
     <div class="player-progress" id="player-progress">
-        <div class="progress" id="progress"></div>
-        <div class="music-duration">
-            <span id="current-time">0:00</span>
-            <span id="duration">0:00</span>
-        </div>
+      <div class="progress" id="progress"></div>
+      <div class="music-duration">
+        <span id="current-time">0:00</span>
+        <span id="duration">0:00</span>
+      </div>
     </div>
 
     <div class="player-controls">
-        <i class="fa-solid fa-backward" title="Previous" id="prev"></i>
-        <i class="fa-solid fa-play" title="Play" id="play"></i>
-        <i class="fa-solid fa-forward" title="Next" id="next"></i>
+      <div class="left-controls">
+        <i class="fa-solid fa-bars" id="menu-btn" title="Playlist"></i>
+      </div>
+
+      <div class="main-controls">
+        <i class="fa-solid fa-backward" id="prev" title="Previous"></i>
+        <i class="fa-solid fa-play" id="play" title="Play"></i>
+        <i class="fa-solid fa-forward" id="next" title="Next"></i>
+      </div>
+
+      <div class="right-controls">
+        <div class="volume-wrapper">
+          <i class="fa-solid fa-volume-high" id="volume-icon"></i>
+          <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1">
+        </div>
+      </div>
     </div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
