@@ -22,7 +22,7 @@ const songs = [
     {
         path: 'Assets/Myosotis.mp3',
         displayName: 'M2U - Myosotis',
-        cover: 'Assets/myosotis.png',
+        cover: 'Assets/myosotis.jpg',
         artist: 'M2U',
     },
     {
